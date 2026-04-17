@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFO Advisory Diagnostic | True North Finance Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:        #00C853;
+  --green-bright: #69F0AE;
+  --green-glow:   rgba(0,200,83,0.25);
+  --green-faint:  rgba(0,200,83,0.08);
+  --green-dim:    rgba(0,200,83,0.15);
+  --gold:         #FFD740;
+  --gold-bright:  #FFE57F;
+  --gold-glow:    rgba(255,215,64,0.25);
+  --gold-faint:   rgba(255,215,64,0.08);
+  --gold-dim:     rgba(255,215,64,0.15);
+  --black:        #030806;
+  --black-2:      #070F09;
+  --black-3:      #0B160D;
+  --black-4:      #101D12;
+  --black-5:      #152019;
+  --white:        #F0FFF4;
+  --white-dim:    rgba(240,255,244,0.55);
+  --white-faint:  rgba(240,255,244,0.06);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* SCANLINE TEXTURE */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,200,83,0.012) 2px,
+    rgba(0,200,83,0.012) 4px
+  );
+}
+
+/* GRAIN */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:0.6;
+}
+
+/* BG ORBS */
+.bg-orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; }
+.orb-1 { width:600px; height:600px; background:radial-gradient(circle, rgba(0,200,83,0.12) 0%, transparent 70%); top:-200px; right:-150px; filter:blur(40px); }
+.orb-2 { width:400px; height:400px; background:radial-gradient(circle, rgba(255,215,64,0.08) 0%, transparent 70%); bottom:-100px; left:-100px; filter:blur(40px); }
+.orb-3 { width:300px; height:300px; background:radial-gradient(circle, rgba(0,200,83,0.07) 0%, transparent 70%); top:40%; left:30%; filter:blur(60px); }
+
+/* CORNER BRACKETS */
+.corner-tl, .corner-tr, .corner-bl, .corner-br {
+  position:fixed; width:30px; height:30px; z-index:50; pointer-events:none;
+}
+.corner-tl { top:70px; left:16px; border-top:1px solid var(--green); border-left:1px solid var(--green); opacity:0.4; }
+.corner-tr { top:70px; right:16px; border-top:1px solid var(--green); border-right:1px solid var(--green); opacity:0.4; }
+.corner-bl { bottom:16px; left:16px; border-bottom:1px solid var(--green); border-left:1px solid var(--green); opacity:0.3; }
+.corner-br { bottom:16px; right:16px; border-bottom:1px solid var(--green); border-right:1px solid var(--green); opacity:0.3; }
+
+/* TOPBAR */
+.topbar {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  height:60px; padding:0 32px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(3,8,6,0.95); backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,200,83,0.2);
+}
+.topbar::after {
+  content:''; position:absolute; bottom:-1px; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, var(--green), transparent);
+  opacity:0.5;
+}
+.logo { display:flex; align-items:center; gap:12px; }
+.logo-icon {
+  width:32px; height:32px; border-radius:5px; position:relative;
+  background:linear-gradient(135deg, var(--green), #004D20);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 0 16px var(--green-glow);
+}
+.logo-icon svg { width:16px; height:16px; }
+.logo-name {
+  font-family:'Playfair Display',serif; font-size:13px; font-weight:700;
+  letter-spacing:0.07em; color:var(--white);
+}
+.logo-name span { color:var(--green); }
+.topbar-badge {
+  font-size:9px; letter-spacing:0.22em; text-transform:uppercase;
+  font-weight:700; color:var(--gold);
+  border:1px solid rgba(255,215,64,0.35);
+  background:var(--gold-faint);
+  padding:4px 12px; border-radius:2px;
+  text-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* PROGRESS */
+.progress-track {
+  position:fixed; top:60px; left:0; right:0; z-index:99;
+  height:3px; background:rgba(0,200,83,0.08);
+}
+.progress-bar {
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--green), var(--gold));
+  transition:width 0.6s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 0 12px var(--green-glow), 0 0 4px var(--green);
+  position:relative;
+}
+.progress-bar::after {
+  content:''; position:absolute; right:-1px; top:50%;
+  transform:translateY(-50%);
+  width:6px; height:6px; border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 10px var(--gold), 0 0 4px var(--gold-bright);
+}
+
+/* STEP DOTS */
+.dots-row {
+  position:fixed; top:74px; left:0; right:0; z-index:98;
+  display:flex; justify-content:center; gap:5px; padding:6px;
+}
+.dot { width:5px; height:5px; border-radius:50%; background:rgba(240,255,244,0.1); transition:all 0.35s; }
+.dot.done   { background:var(--green); box-shadow:0 0 6px var(--green-glow); }
+.dot.active { background:var(--gold); width:16px; border-radius:3px; box-shadow:0 0 8px var(--gold-glow); }
+
+/* WRAPPER */
+.wrapper {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:130px 20px 80px; position:relative; z-index:1;
+}
+
+/* SCREENS */
+.screen { display:none; width:100%; max-width:680px; }
+.screen.active { display:block; animation:riseIn 0.45s ease forwards; }
+@keyframes riseIn { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── INTRO ─── */
+.intro-eyebrow {
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:10px; letter-spacing:0.24em; text-transform:uppercase; font-weight:700;
+  color:var(--green); margin-bottom:24px;
+  text-shadow:0 0 20px var(--green-glow);
+}
+.intro-eyebrow::before { content:''; width:28px; height:1px; background:var(--green); box-shadow:0 0 8px var(--green); }
+
+.intro-h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(36px,6vw,62px); font-weight:900; line-height:1.04;
+  margin-bottom:24px;
+  text-shadow:0 2px 40px rgba(0,200,83,0.15);
+}
+.intro-h1 .g { color:var(--gold); font-style:italic; text-shadow:0 0 30px var(--gold-glow); }
+.intro-h1 .gr { color:var(--green); text-shadow:0 0 30px var(--green-glow); }
+
+.intro-sub {
+  font-size:17px; line-height:1.8; color:var(--white-dim);
+  margin-bottom:44px; font-weight:300; max-width:580px;
+}
+
+.stat-strip { display:flex; gap:14px; margin-bottom:48px; flex-wrap:wrap; }
+.stat-tile {
+  flex:1; min-width:120px;
+  background:var(--black-3);
+  border:1px solid rgba(0,200,83,0.2);
+  border-radius:4px; padding:18px 20px;
+  position:relative; overflow:hidden;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.stat-tile:hover {
+  border-color:var(--green);
+  box-shadow:0 0 20px var(--green-faint), inset 0 0 20px var(--green-faint);
+}
+.stat-tile::before { content:''; position:absolute; top:0; left:0; width:2px; height:100%; background:linear-gradient(to bottom, var(--green), var(--gold)); box-shadow:0 0 10px var(--green-glow); }
+.stat-val { font-family:'Playfair Display',serif; font-size:30px; font-weight:700; color:var(--gold); line-height:1; margin-bottom:5px; text-shadow:0 0 20px var(--gold-glow); }
+.stat-lbl { font-size:12px; color:var(--white-dim); font-weight:400; }
+
+.btn-start {
+  display:inline-flex; align-items:center; gap:12px;
+  background:var(--green); color:var(--black);
+  border:none; border-radius:4px;
+  padding:18px 40px; font-size:14px; font-weight:700;
+  font-family:'DM Sans',sans-serif; letter-spacing:0.1em; text-transform:uppercase;
+  cursor:pointer; transition:all 0.25s; position:relative;
+  box-shadow:0 0 30px var(--green-glow), 0 4px 20px rgba(0,200,83,0.3);
+}
+.btn-start:hover {
+  background:var(--green-bright); transform:translateY(-2px);
+  box-shadow:0 0 50px var(--green-glow), 0 8px 30px rgba(0,200,83,0.4);
+}
+.btn-start:active { transform:translateY(0); }
+
+.intro-meta { display:flex; align-items:center; gap:20px; margin-top:20px; flex-wrap:wrap; }
+.meta-chip { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--white-dim); }
+.meta-chip svg { color:var(--green); filter:drop-shadow(0 0 4px var(--green)); flex-shrink:0; }
+
+/* ─── QUESTION ─── */
+.q-type-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+  font-weight:700; padding:5px 14px; border-radius:2px; margin-bottom:20px;
+}
+.badge-fin  { background:var(--green-faint); color:var(--green-bright); border:1px solid rgba(0,200,83,0.25); text-shadow:0 0 10px var(--green-glow); }
+.badge-emo  { background:var(--gold-faint);  color:var(--gold-bright);  border:1px solid rgba(255,215,64,0.25); text-shadow:0 0 10px var(--gold-glow); }
+.badge-mind { background:rgba(180,130,255,0.08); color:#D4AEFF; border:1px solid rgba(180,130,255,0.2); }
+.badge-gut  { background:rgba(255,80,80,0.08); color:#FF9999; border:1px solid rgba(255,80,80,0.2); }
+
+.q-counter {
+  font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--white-dim); font-weight:500; margin-bottom:12px;
+}
+.q-counter span { color:var(--green); font-weight:700; text-shadow:0 0 10px var(--green-glow); }
+
+.q-headline {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(24px,4vw,36px); font-weight:700; line-height:1.2;
+  margin-bottom:12px;
+}
+.q-headline .gold { color:var(--gold); font-style:italic; text-shadow:0 0 20px var(--gold-glow); }
+.q-headline .grn  { color:var(--green); font-style:italic; text-shadow:0 0 20px var(--green-glow); }
+
+.q-insight {
+  font-size:14px; color:var(--white-dim); font-weight:300; line-height:1.65;
+  margin-bottom:30px; padding:14px 18px;
+  border-left:2px solid var(--green);
+  background:var(--green-faint);
+  border-radius:0 4px 4px 0;
+  box-shadow:inset 0 0 20px var(--green-faint);
+}
+
+/* emotional insight style */
+.screen[data-type="emotional"] .q-insight,
+.screen[data-type="gut"] .q-insight {
+  border-left-color:var(--gold);
+  background:var(--gold-faint);
+  box-shadow:inset 0 0 20px var(--gold-faint);
+}
+.screen[data-type="mindset"] .q-insight {
+  border-left-color:rgba(180,130,255,0.6);
+  background:rgba(180,130,255,0.05);
+}
+
+/* OPTIONS */
+.options-grid { display:flex; flex-direction:column; gap:10px; }
+
+.opt {
+  background:var(--black-3);
+  border:1px solid rgba(240,255,244,0.07);
+  border-radius:4px; padding:16px 18px;
+  cursor:pointer; display:flex; align-items:flex-start; gap:14px;
+  transition:all 0.22s; position:relative; overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.opt::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, var(--green-faint), transparent);
+  opacity:0; transition:opacity 0.22s;
+}
+.opt:hover { border-color:rgba(0,200,83,0.45); transform:translateX(4px); box-shadow:0 0 16px var(--green-faint); }
+.opt:hover::before { opacity:1; }
+.opt.picked { border-color:var(--green); background:rgba(0,200,83,0.1); box-shadow:0 0 20px var(--green-faint), inset 0 0 20px var(--green-faint); }
+.opt.picked::before { opacity:1; }
+
+/* emotional/gut option overrides */
+.screen[data-type="emotional"] .opt:hover,
+.screen[data-type="gut"] .opt:hover { border-color:rgba(255,215,64,0.45); box-shadow:0 0 16px var(--gold-faint); }
+.screen[data-type="emotional"] .opt::before,
+.screen[data-type="gut"] .opt::before { background:linear-gradient(90deg, var(--gold-faint), transparent); }
+.screen[data-type="emotional"] .opt.picked,
+.screen[data-type="gut"] .opt.picked { border-color:var(--gold); background:rgba(255,215,64,0.08); box-shadow:0 0 20px var(--gold-faint); }
+
+.screen[data-type="mindset"] .opt:hover { border-color:rgba(180,130,255,0.4); }
+.screen[data-type="mindset"] .opt.picked { border-color:rgba(180,130,255,0.8); background:rgba(180,130,255,0.07); }
+
+.opt-key {
+  width:28px; height:28px; border-radius:3px; flex-shrink:0;
+  border:1px solid rgba(0,200,83,0.3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:700; color:var(--green);
+  transition:all 0.22s; position:relative; z-index:1; margin-top:2px;
+  text-shadow:0 0 8px var(--green-glow);
+}
+.opt.picked .opt-key { background:var(--green); border-color:var(--green); color:var(--black); box-shadow:0 0 12px var(--green-glow); text-shadow:none; }
+
+.screen[data-type="emotional"] .opt-key,
+.screen[data-type="gut"] .opt-key { color:var(--gold); border-color:rgba(255,215,64,0.3); text-shadow:0 0 8px var(--gold-glow); }
+.screen[data-type="emotional"] .opt.picked .opt-key,
+.screen[data-type="gut"] .opt.picked .opt-key { background:var(--gold); border-color:var(--gold); color:var(--black); box-shadow:0 0 12px var(--gold-glow); }
+
+.screen[data-type="mindset"] .opt-key { color:#D4AEFF; border-color:rgba(180,130,255,0.3); }
+.screen[data-type="mindset"] .opt.picked .opt-key { background:rgba(180,130,255,0.8); border-color:rgba(180,130,255,0.8); color:var(--black); }
+
+.opt-body { position:relative; z-index:1; }
+.opt-label { font-size:15px; font-weight:500; color:var(--white); line-height:1.3; margin-bottom:4px; }
+.opt-sub   { font-size:13px; color:var(--white-dim); font-weight:300; line-height:1.4; }
+
+/* NAV */
+.nav-bar { display:flex; align-items:center; justify-content:space-between; margin-top:30px; gap:12px; }
+.btn-back {
+  display:flex; align-items:center; gap:8px;
+  background:none; border:1px solid rgba(240,255,244,0.1); border-radius:4px;
+  padding:12px 20px; color:var(--white-dim); font-size:13px;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;
+}
+.btn-back:hover { border-color:rgba(0,200,83,0.3); color:var(--green); }
+.btn-fwd {
+  display:flex; align-items:center; gap:10px;
+  background:var(--green); color:var(--black);
+  border:none; border-radius:4px; padding:14px 30px;
+  font-size:12px; font-weight:700; font-family:'DM Sans',sans-serif;
+  letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.22s;
+  box-shadow:0 0 20px var(--green-faint);
+}
+.btn-fwd:not(:disabled):hover { background:var(--green-bright); box-shadow:0 0 30px var(--green-glow); transform:translateY(-1px); }
+.btn-fwd:disabled { opacity:0.25; cursor:not-allowed; box-shadow:none; }
+.btn-fwd.final { background:var(--gold); color:var(--black); box-shadow:0 0 20px var(--gold-faint); }
+.btn-fwd.final:not(:disabled):hover { background:var(--gold-bright); box-shadow:0 0 30px var(--gold-glow); }
+
+/* OPTIN */
+.optin-shell {
+  background:var(--black-3); border:1px solid rgba(0,200,83,0.2);
+  border-radius:6px; padding:50px; position:relative; overflow:hidden;
+}
+.optin-shell::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--green), var(--gold)); box-shadow:0 0 20px var(--green-glow); }
+.optin-shell::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(0,200,83,0.05) 0%, transparent 60%); pointer-events:none; }
+
+.optin-ey { font-size:10px; letter-spacing:0.22em; text-transform:uppercase; font-weight:700; color:var(--green); margin-bottom:18px; text-shadow:0 0 15px var(--green-glow); }
+.optin-h { font-family:'Playfair Display',serif; font-size:clamp(26px,4vw,40px); font-weight:900; line-height:1.15; margin-bottom:14px; }
+.optin-h .g { color:var(--gold); font-style:italic; text-shadow:0 0 25px var(--gold-glow); }
+.optin-p { font-size:15px; color:var(--white-dim); line-height:1.75; margin-bottom:38px; font-weight:300; }
+.fields { display:flex; flex-direction:column; gap:12px; margin-bottom:22px; }
+input[type=text], input[type=email] {
+  width:100%; background:rgba(240,255,244,0.04); border:1px solid rgba(0,200,83,0.2);
+  border-radius:4px; padding:15px 18px; font-size:15px;
+  font-family:'DM Sans',sans-serif; color:var(--white); outline:none; transition:all 0.22s;
+}
+input::placeholder { color:rgba(240,255,244,0.25); }
+input:focus { border-color:var(--green); background:rgba(0,200,83,0.06); box-shadow:0 0 15px var(--green-faint); }
+.btn-unlock {
+  width:100%; padding:18px;
+  background:linear-gradient(90deg, var(--green), #007A32);
+  color:var(--black); border:none; border-radius:4px;
+  font-size:13px; font-weight:700; font-family:'DM Sans',sans-serif;
+  letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.25s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  box-shadow:0 0 30px var(--green-faint);
+}
+.btn-unlock:hover { background:linear-gradient(90deg, var(--green-bright), var(--green)); box-shadow:0 0 50px var(--green-glow); transform:translateY(-1px); }
+.err { font-size:13px; color:#FF6B6B; margin-top:8px; display:none; }
+.privacy-txt { font-size:12px; color:var(--white-dim); opacity:0.45; line-height:1.6; margin-top:14px; }
+
+/* LOADING */
+.load-wrap { text-align:center; padding:80px 0; }
+.loader { width:60px; height:60px; margin:0 auto 30px; position:relative; }
+.loader::before, .loader::after {
+  content:''; position:absolute; border-radius:50%; border:2px solid transparent;
+}
+.loader::before { inset:0; border-top-color:var(--green); border-right-color:rgba(0,200,83,0.2); animation:spin 1s linear infinite; box-shadow:0 0 20px var(--green-glow); }
+.loader::after  { inset:9px; border-top-color:var(--gold); animation:spin 0.65s linear infinite reverse; box-shadow:0 0 12px var(--gold-glow); }
+@keyframes spin { to{transform:rotate(360deg)} }
+.load-h { font-family:'Playfair Display',serif; font-size:22px; color:var(--white); margin-bottom:8px; }
+.load-s { font-size:13px; color:var(--white-dim); font-weight:300; }
+
+/* ─── RESULTS ─── */
+.profile-row { display:flex; align-items:center; gap:16px; margin-bottom:28px; }
+.p-icon { width:52px; height:52px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.p-tag  { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; font-weight:700; margin-bottom:3px; }
+.p-name { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; }
+
+.crit .p-icon { background:rgba(255,60,60,0.12); border:1px solid rgba(255,60,60,0.25); color:#FF7070; box-shadow:0 0 20px rgba(255,60,60,0.15); }
+.crit .p-tag  { color:#FF7070; text-shadow:0 0 12px rgba(255,100,100,0.5); }
+.mod  .p-icon { background:var(--gold-faint); border:1px solid rgba(255,215,64,0.3); color:var(--gold); box-shadow:0 0 20px var(--gold-faint); }
+.mod  .p-tag  { color:var(--gold); text-shadow:0 0 12px var(--gold-glow); }
+.rdy  .p-icon { background:var(--green-faint); border:1px solid rgba(0,200,83,0.3); color:var(--green); box-shadow:0 0 20px var(--green-faint); }
+.rdy  .p-tag  { color:var(--green); text-shadow:0 0 12px var(--green-glow); }
+
+.res-h {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(30px,5vw,48px); font-weight:900; line-height:1.1;
+  margin-bottom:16px;
+}
+.res-h .g  { color:var(--gold); font-style:italic; text-shadow:0 0 30px var(--gold-glow); }
+.res-h .gr { color:var(--green); font-style:italic; text-shadow:0 0 30px var(--green-glow); }
+.res-sub { font-size:16px; line-height:1.8; color:var(--white-dim); font-weight:300; margin-bottom:36px; }
+
+/* SCORE BAR */
+.score-block {
+  display:flex; align-items:center; gap:24px;
+  background:var(--black-3); border-radius:6px; padding:22px 26px;
+  margin-bottom:28px; border:1px solid rgba(0,200,83,0.15);
+  box-shadow:0 0 30px var(--green-faint);
+}
+.ring-wrap { position:relative; flex-shrink:0; }
+.ring-wrap svg { display:block; }
+.ring-pct {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--gold);
+  text-shadow:0 0 15px var(--gold-glow);
+}
+.score-info-lbl { font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--white-dim); margin-bottom:5px; }
+.score-info-val { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--white); line-height:1; }
+.score-info-sub { font-size:13px; color:var(--white-dim); font-weight:300; margin-top:5px; }
+
+/* EMOTIONAL BLOCK */
+.emo-block {
+  background:linear-gradient(135deg, var(--gold-faint), var(--green-faint));
+  border:1px solid rgba(255,215,64,0.18); border-radius:6px;
+  padding:28px 30px; margin-bottom:28px; position:relative; overflow:hidden;
+  box-shadow:0 0 30px var(--gold-faint);
+}
+.emo-block::before {
+  content:'\201C'; position:absolute; top:-16px; left:18px;
+  font-family:'Playfair Display',serif; font-size:120px;
+  color:rgba(255,215,64,0.07); line-height:1; pointer-events:none;
+}
+.emo-lbl { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:12px; text-shadow:0 0 12px var(--gold-glow); }
+.emo-quote { font-family:'Playfair Display',serif; font-size:19px; font-style:italic; line-height:1.65; color:var(--white); position:relative; z-index:1; }
+
+/* FINDINGS */
+.finds-card {
+  background:var(--black-3); border:1px solid rgba(0,200,83,0.15);
+  border-radius:6px; padding:28px; margin-bottom:28px;
+  box-shadow:0 0 25px var(--green-faint);
+}
+.finds-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+.finds-title { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--green); font-weight:700; text-shadow:0 0 12px var(--green-glow); }
+.finds-ct { font-size:11px; color:var(--white-dim); background:var(--green-faint); border:1px solid rgba(0,200,83,0.2); padding:3px 10px; border-radius:2px; }
+.find { display:flex; gap:14px; padding:14px 0; border-bottom:1px solid rgba(240,255,244,0.04); }
+.find:last-child { border-bottom:none; padding-bottom:0; }
+.find:first-child { padding-top:0; }
+.fdot { width:10px; height:10px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+.dr  { background:#FF6B6B; box-shadow:0 0 8px rgba(255,107,107,0.5); }
+.da  { background:var(--gold); box-shadow:0 0 8px var(--gold-glow); }
+.dg  { background:var(--green); box-shadow:0 0 8px var(--green-glow); }
+.fbody {}
+.ft { font-size:14px; font-weight:600; color:var(--white); margin-bottom:4px; }
+.fd { font-size:13px; color:var(--white-dim); font-weight:300; line-height:1.55; }
+
+/* CTA */
+.cta-shell {
+  background:var(--black-3); border:1px solid rgba(255,215,64,0.25);
+  border-radius:6px; padding:36px; text-align:center; position:relative; overflow:hidden;
+  box-shadow:0 0 40px var(--gold-faint);
+}
+.cta-shell::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--gold), var(--green), var(--gold)); box-shadow:0 0 20px var(--gold-glow); }
+.cta-shell::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at top, rgba(255,215,64,0.04) 0%, transparent 60%); pointer-events:none; }
+.cta-ey { font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:12px; text-shadow:0 0 15px var(--gold-glow); }
+.cta-h { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--white); margin-bottom:12px; }
+.cta-p { font-size:14px; color:var(--white-dim); line-height:1.75; margin-bottom:28px; font-weight:300; }
+.btn-book {
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--gold); color:var(--black);
+  border:none; border-radius:4px; padding:18px 40px;
+  font-size:13px; font-weight:700; font-family:'DM Sans',sans-serif;
+  letter-spacing:0.1em; text-transform:uppercase; cursor:pointer;
+  text-decoration:none; transition:all 0.25s;
+  box-shadow:0 0 30px var(--gold-glow);
+}
+.btn-book:hover { background:var(--gold-bright); box-shadow:0 0 50px var(--gold-glow); transform:translateY(-2px); }
+.cta-foot { font-size:12px; color:var(--white-dim); margin-top:12px; opacity:0.5; }
+.site-link { text-align:center; margin-top:26px; }
+.site-link a { font-size:12px; color:var(--white-dim); text-decoration:none; opacity:0.4; letter-spacing:0.05em; transition:opacity 0.2s; }
+.site-link a:hover { opacity:0.8; }
+
+@media (max-width:540px) {
+  .topbar { padding:0 18px; }
+  .optin-shell { padding:30px 22px; }
+  .nav-bar { flex-wrap:wrap; }
+  .btn-fwd, .btn-back { flex:1; justify-content:center; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+<div class="bg-orb orb-3"></div>
+<div class="corner-tl"></div>
+<div class="corner-tr"></div>
+<div class="corner-bl"></div>
+<div class="corner-br"></div>
+
+<div class="topbar">
+  <div class="topbar-badge">CFO Diagnostic</div>
+</div>
+
+<div class="progress-track"><div class="progress-bar" id="pBar"></div></div>
+<div class="dots-row" id="dotsRow"></div>
+
+<div class="wrapper">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-0">
+    <div class="intro-eyebrow">Free Business Diagnostic</div>
+    <h1 class="intro-h1">
+      The <span class="g">Truth</span> About<br>Your Business <span class="gr">Finances.</span>
+    </h1>
+    <p class="intro-sub">
+      15 questions. 4 minutes. No fluff. This diagnostic is designed to surface the financial realities most business owners avoid, the emotional weight they carry alone, and the exact gaps a fractional CFO would fix.
+    </p>
+    <div class="stat-strip">
+      <div class="stat-tile"><div class="stat-val">15</div><div class="stat-lbl">Diagnostic questions</div></div>
+      <div class="stat-tile"><div class="stat-val">4 min</div><div class="stat-lbl">To complete</div></div>
+      <div class="stat-tile"><div class="stat-val">Free</div><div class="stat-lbl">No obligation</div></div>
+    </div>
+    <button class="btn-start" onclick="startSurvey()">
+      Start My Diagnostic
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <div class="intro-meta">
+      <div class="meta-chip">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+        Personalized results, instantly
+      </div>
+      <div class="meta-chip">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Data never shared or sold
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="load-wrap">
+      <div class="loader"></div>
+      <div class="load-h">Analyzing your responses...</div>
+      <div class="load-s">Building your personalized CFO advisory profile</div>
+    </div>
+  </div>
+
+  <!-- OPTIN -->
+  <div class="screen" id="screen-optin">
+    <div class="optin-shell">
+      <div class="optin-ey">Your Results Are Ready</div>
+      <h2 class="optin-h">You answered honestly.<br>Now see <span class="g">what it means.</span></h2>
+      <p class="optin-p">Enter your details to unlock your full CFO Advisory profile. You will see your top financial blind spots, your urgency score, and a clear next step built around your specific answers.</p>
+      <div class="fields">
+        <input type="text"  id="fname"  placeholder="Your first name" />
+        <input type="email" id="femail" placeholder="Your business email" />
+        <div class="err" id="ferr">Please enter your name and a valid email to continue.</div>
+      </div>
+      <button class="btn-unlock" onclick="submitGate()">
+        Unlock My Results
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p class="privacy-txt">By submitting, you agree to receive financial insights from True North Finance Group. Your information is never sold or shared.</p>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results"></div>
+
+</div><!-- /wrapper -->
+
+<script>
+const FORMSPREE = 'https://formspree.io/f/mlgozgpg';
+const CALENDLY  = 'https://calendly.com/truenorthfinancegroup'; // UPDATE
+
+const Q = [
+  // ── 1 REVENUE
+  {
+    id:'q1', type:'financial',
+    badge:'Financial Reality',
+    text:'What is your business doing in annual revenue right now?',
+    insight:'Revenue is just the beginning. What happens between that number and your bank account is where the real story lives.',
+    opts:[
+      { k:'A', label:'Under $250K',      sub:'Building the foundation',          score:1 },
+      { k:'B', label:'$250K to $750K',   sub:'Gaining real traction',            score:2 },
+      { k:'C', label:'$750K to $2M',     sub:'Scaling with real complexity',     score:3 },
+      { k:'D', label:'$2M and above',    sub:'Established, high-stakes finances', score:4 },
+    ]
+  },
+  // ── 2 FINANCIAL MANAGEMENT
+  {
+    id:'q2', type:'financial',
+    badge:'Financial Management',
+    text:'How is your business actually being managed financially?',
+    insight:'There is a massive difference between recording what happened and engineering what happens next. Most owners only have the former.',
+    opts:[
+      { k:'A', label:'I handle it myself',           sub:'Spreadsheets, guesswork, or gut instinct', score:4, flag:'diy' },
+      { k:'B', label:'We have a bookkeeper',          sub:'Records kept, but no strategy in place',   score:3, flag:'bookkeeper' },
+      { k:'C', label:'CPA or tax accountant',         sub:'Taxes handled, future largely unplanned',  score:2, flag:'cpa' },
+      { k:'D', label:'Fractional or part-time CFO',   sub:'Strategic oversight already in place',    score:1, flag:'has_cfo' },
+    ]
+  },
+  // ── 3 CASH FORECAST
+  {
+    id:'q3', type:'financial',
+    badge:'Cash Flow Visibility',
+    text:'Can you tell me, right now, what your cash position will look like in 90 days?',
+    insight:'Most cash crises are not surprises. They are visible 60 to 90 days out. You just need to know where to look.',
+    opts:[
+      { k:'A', label:'No. I check my balance and hope',  sub:'Purely reactive financial mode',       score:4, flag:'no_forecast' },
+      { k:'B', label:'Vaguely. A rough mental guess',    sub:'Awareness without any real structure', score:3 },
+      { k:'C', label:'Yes. I track it manually',         sub:'Consistent but time-consuming',        score:2 },
+      { k:'D', label:'Yes. Automated and up to date',    sub:'Real-time visibility into cash flow',  score:1 },
+    ]
+  },
+  // ── 4 SURVIVAL QUESTION (realization)
+  {
+    id:'q4', type:'financial',
+    badge:'Business Resilience',
+    text:'If your revenue stopped completely for 30 days, what would happen?',
+    insight:'This single question reveals whether you are building a business or running on a treadmill. The answer changes everything.',
+    opts:[
+      { k:'A', label:'We would be in serious trouble within a week',   sub:'No runway whatsoever', score:4, flag:'no_runway' },
+      { k:'B', label:'We could survive a couple of weeks at best',     sub:'Dangerously thin margin', score:3 },
+      { k:'C', label:'We have a month or two of cushion',              sub:'Some buffer but not enough', score:2 },
+      { k:'D', label:'We have 3 or more months of operating reserves', sub:'Real financial resilience', score:1 },
+    ]
+  },
+  // ── 5 OWNER PAY
+  {
+    id:'q5', type:'financial',
+    badge:'Owner Compensation',
+    text:'How consistently do you actually pay yourself?',
+    insight:'Owner compensation is not just personal. It is the most honest signal of whether your business model is truly working.',
+    opts:[
+      { k:'A', label:'Rarely or never. I take what is left',  sub:'The business comes first, always',        score:4, flag:'no_pay' },
+      { k:'B', label:'Inconsistently. Only when cash allows', sub:'No predictability in your own income',    score:3 },
+      { k:'C', label:'Most months. Roughly on target',        sub:'Getting better but still inconsistent',   score:2 },
+      { k:'D', label:'Every month, on a fixed schedule',      sub:'You treat yourself as a real expense',    score:1 },
+    ]
+  },
+  // ── 6 PROFIT DRIVERS
+  {
+    id:'q6', type:'financial',
+    badge:'Profit Intelligence',
+    text:'Can you name the three things actually driving your profit right now?',
+    insight:'Not your revenue lines. Not your biggest clients. Your actual profit drivers. The levers that move your margin.',
+    opts:[
+      { k:'A', label:'I genuinely have no idea',               sub:'Zero visibility at the margin level',     score:4, flag:'no_visibility' },
+      { k:'B', label:'I have a general sense but nothing firm', sub:'Intuition without data to back it up',   score:3 },
+      { k:'C', label:'Yes, roughly. I could name them',        sub:'Aware but not actively managing them',    score:2 },
+      { k:'D', label:'Yes. I manage them actively and track them', sub:'Built into your strategy and metrics', score:1 },
+    ]
+  },
+  // ── 7 EMOTIONAL: BANK ACCOUNT FEELING
+  {
+    id:'q7', type:'emotional',
+    badge:'Emotional Check-In',
+    text:'When you open your banking app, what is the feeling that hits you first?',
+    insight:'Your emotional relationship with your own numbers reveals more than any financial report could. Be honest here.',
+    opts:[
+      { k:'A', label:'Dread. I would genuinely rather not look',   sub:'Avoidance is its own kind of cost',     score:4, flag:'dread',   emo:'avoidance' },
+      { k:'B', label:'Anxiety. I brace myself before I open it',   sub:'Constant low-level financial fear',     score:3, emo:'anxiety' },
+      { k:'C', label:'Cautious. Getting better but still guarded', sub:'Progress, but not yet at peace',        score:2, emo:'cautious' },
+      { k:'D', label:'Calm. I know exactly what I will see',       sub:'Financial clarity is a real asset',     score:1, emo:'confident' },
+    ]
+  },
+  // ── 8 EMOTIONAL: STRESS ON LEADERSHIP
+  {
+    id:'q8', type:'emotional',
+    badge:'Emotional Check-In',
+    text:'How often does money stress affect your ability to lead your business?',
+    insight:'Financial anxiety is one of the most underestimated performance drains on business owners. You are carrying more than you should have to.',
+    opts:[
+      { k:'A', label:'Constantly. It is always in the background',     sub:'Affecting your focus, decisions, and energy',   score:4, flag:'constant_stress', emo:'overwhelmed' },
+      { k:'B', label:'Often. Especially at month end or slow periods', sub:'Cyclical dread around cash cycles',             score:3, emo:'periodic' },
+      { k:'C', label:'Sometimes. Around major decisions',             sub:'Manageable but present',                        score:2 },
+      { k:'D', label:'Rarely. My finances support my leadership',     sub:'Money is a tool, not a source of fear',         score:1, emo:'grounded' },
+    ]
+  },
+  // ── 9 GUT PUNCH: AVOIDANCE
+  {
+    id:'q9', type:'gut',
+    badge:'Hard Question',
+    text:'Have you ever avoided a financial conversation because you were afraid of what the answer would be?',
+    insight:'Most business owners have. The avoidance itself is the signal. It does not mean you are failing. It means you need better information and someone in your corner.',
+    opts:[
+      { k:'A', label:'Yes. More than once and more recently than I would like', sub:'Active financial avoidance happening now', score:4, flag:'avoidance' },
+      { k:'B', label:'Yes. In the past, not as much now',                      sub:'You are working through it',              score:3 },
+      { k:'C', label:'Occasionally. Only around very specific topics',         sub:'Selective awareness',                     score:2 },
+      { k:'D', label:'No. I confront financial reality head on',              sub:'Full financial ownership',                score:1 },
+    ]
+  },
+  // ── 10 GUT PUNCH: PERSONAL IMPACT
+  {
+    id:'q10', type:'gut',
+    badge:'Hard Question',
+    text:'Has the financial stress of your business ever made you question whether it was worth building it at all?',
+    insight:'This question is not about weakness. It is about how much you are carrying. Business owners who answer honestly here are exactly the ones who deserve a different kind of support.',
+    opts:[
+      { k:'A', label:'Yes. I have had serious doubts, and recently', sub:'The weight has been heavy',                       score:4, flag:'doubt', emo:'doubt' },
+      { k:'B', label:'Yes. In harder seasons, I have been there',   sub:'You pushed through. That matters.',              score:3, emo:'pushed_through' },
+      { k:'C', label:'Occasionally. Fleeting moments of doubt',     sub:'Human, not alarming',                            score:2 },
+      { k:'D', label:'Never. I am fully committed regardless',      sub:'Uncommon resilience',                            score:1 },
+    ]
+  },
+  // ── 11 LOVED ONES
+  {
+    id:'q11', type:'gut',
+    badge:'Personal Reality',
+    text:'Does someone close to you worry about your business finances?',
+    insight:'When your business finances start affecting the people around you, the cost of inaction becomes personal. This is one of the most common and least talked about realities for business owners.',
+    opts:[
+      { k:'A', label:'Yes. It has caused real tension',             sub:'Financial stress has touched your relationships',  score:4, flag:'family_stress', emo:'tension' },
+      { k:'B', label:'Yes. They worry even if they do not say it', sub:'The unspoken weight',                             score:3 },
+      { k:'C', label:'Sometimes. They notice when things are tight', sub:'Awareness without regular conflict',            score:2 },
+      { k:'D', label:'No. They are confident in my financial path', sub:'Your stability extends to those around you',    score:1 },
+    ]
+  },
+  // ── 12 CFO MINDSET
+  {
+    id:'q12', type:'mindset',
+    badge:'Owner Mindset',
+    text:'When you hear the words fractional CFO, what is your honest reaction?',
+    insight:'Where you land on this question reveals where you are in your business journey. There is no wrong answer, only the honest one.',
+    opts:[
+      { k:'A', label:'That is for bigger companies, not me',            sub:'A luxury I cannot afford right now',          score:4, flag:'thinks_luxury', mind:'cost_fear' },
+      { k:'B', label:'Intrigued but I do not fully understand the model', sub:'Curious and open',                         score:3, flag:'curious',      mind:'curious' },
+      { k:'C', label:'I have been looking into it seriously',            sub:'Ready but still evaluating',                score:2, mind:'exploring' },
+      { k:'D', label:'I know I need one. I just need the right fit',     sub:'Decided and ready to move',                score:1, mind:'decided' },
+    ]
+  },
+  // ── 13 FINANCIAL FREEDOM VISION
+  {
+    id:'q13', type:'emotional',
+    badge:'Your Vision',
+    text:'If your business finally gave you true financial freedom, what would change first in your life?',
+    insight:'Your answer here is not just aspirational. It is the clearest picture of exactly what is at stake in getting your finances right.',
+    opts:[
+      { k:'A', label:'I could stop working from fear and start working from choice', sub:'Freedom over survival',   score:4, flag:'survival_mode', emo:'survival' },
+      { k:'B', label:'I could stop worrying about my family\'s financial future',   sub:'Security and peace',       score:3, emo:'security' },
+      { k:'C', label:'I could invest and grow without second-guessing every dollar', sub:'Clarity and confidence', score:2, emo:'confidence' },
+      { k:'D', label:'I could scale the business without my personal finances at risk', sub:'True separation',    score:1, emo:'freedom' },
+    ]
+  },
+  // ── 14 PAIN POINT
+  {
+    id:'q14', type:'financial',
+    badge:'Biggest Pain Point',
+    text:'Which of these is keeping you up at night right now?',
+    insight:'Pick the one that genuinely runs on a loop. This single answer shapes the most important finding in your results.',
+    opts:[
+      { k:'A', label:'Cash is always tight regardless of revenue',      sub:'Revenue looks good but money disappears', score:4, flag:'cash_tight' },
+      { k:'B', label:'Profitable but completely stuck on growth',        sub:'No clear financial path forward',        score:3, flag:'stagnant' },
+      { k:'C', label:'I do not trust my own financial numbers',          sub:'Blind spots at the reporting level',     score:3, flag:'blind' },
+      { k:'D', label:'I need capital but cannot access or qualify for it', sub:'Growth locked behind funding gaps',   score:4, flag:'capital' },
+    ]
+  },
+  // ── 15 NORTH STAR GOAL
+  {
+    id:'q15', type:'financial',
+    badge:'Your North Star',
+    text:'What is the financial outcome that matters most to you in the next 12 to 18 months?',
+    insight:'This is the finish line your CFO advisory would be built around. Everything else in your results points here.',
+    opts:[
+      { k:'A', label:'Stabilize cash flow and finally breathe',          sub:'Build a real cushion and stop reacting',   flag:'goal_stability' },
+      { k:'B', label:'Scale aggressively and capture the market',        sub:'The infrastructure to grow without chaos', flag:'goal_scale' },
+      { k:'C', label:'Raise capital or secure funding to grow',          sub:'Get lender or investor ready',             flag:'goal_capital' },
+      { k:'D', label:'Exit, sell, or prepare for a major transaction',   sub:'Build the business to be worth what it should', flag:'goal_exit' },
+    ]
+  },
+];
+
+let answers = {}, curQ = 0;
+
+function renderDots() {
+  const el = document.getElementById('dotsRow');
+  el.innerHTML = Q.map((_,i)=>`<div class="dot" id="d${i}"></div>`).join('');
+  el.style.opacity='1';
+}
+
+function syncDots(active) {
+  Q.forEach((_,i)=>{ const d=document.getElementById(`d${i}`); if(!d)return; d.className='dot'; if(i<active)d.classList.add('done'); else if(i===active)d.classList.add('active'); });
+}
+
+function syncBar(idx) {
+  const pct = idx===null ? 100 : Math.round((idx/Q.length)*100);
+  document.getElementById('pBar').style.width = pct+'%';
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const t=document.getElementById(id); if(!t)return;
+  t.style.animation='none'; t.offsetHeight; t.style.animation='';
+  t.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildQ(idx) {
+  const eid=`screen-q${idx}`;
+  if(document.getElementById(eid))return;
+  const q=Q[idx];
+  const badgeClass={financial:'badge-fin',emotional:'badge-emo',mindset:'badge-mind',gut:'badge-gut'}[q.type]||'badge-fin';
+  const optHTML=q.opts.map((o,oi)=>`
+    <div class="opt" id="o${idx}-${oi}" onclick="pick(${idx},${oi})" role="button" tabindex="0">
+      <div class="opt-key">${o.k}</div>
+      <div class="opt-body">
+        <div class="opt-label">${o.label}</div>
+        ${o.sub?`<div class="opt-sub">${o.sub}</div>`:''}
+      </div>
+    </div>`).join('');
+  const isLast=idx===Q.length-1;
+  const div=document.createElement('div');
+  div.className='screen'; div.id=eid; div.dataset.type=q.type;
+  div.innerHTML=`
+    <span class="q-type-badge ${badgeClass}">${q.badge}</span>
+    <div class="q-counter">Question <span>${idx+1}</span> of ${Q.length}</div>
+    <h2 class="q-headline">${q.text}</h2>
+    ${q.insight?`<p class="q-insight">${q.insight}</p>`:''}
+    <div class="options-grid">${optHTML}</div>
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack(${idx})">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+      <button class="btn-fwd${isLast?' final':''}" id="bf${idx}" onclick="goFwd(${idx})" disabled>
+        ${isLast?'See My Results':'Next'}
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>`;
+  document.querySelector('.wrapper').appendChild(div);
+  div.querySelectorAll('.opt').forEach((el,oi)=>{ el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')pick(idx,oi);}); });
+}
+
+function pick(idx,oi) {
+  const q=Q[idx];
+  answers[q.id]={idx,...q.opts[oi]};
+  q.opts.forEach((_,i)=>document.getElementById(`o${idx}-${i}`).classList.toggle('picked',i===oi));
+  document.getElementById(`bf${idx}`).disabled=false;
+}
+
+function startSurvey() {
+  renderDots();
+  buildQ(0);
+  show('screen-q0');
+  syncBar(0); syncDots(0);
+}
+
+function goFwd(idx) {
+  if(!answers[Q[idx].id])return;
+  const next=idx+1;
+  if(next<Q.length){ buildQ(next); show(`screen-q${next}`); syncBar(next); syncDots(next); }
+  else { document.getElementById('dotsRow').style.opacity='0'; show('screen-optin'); syncBar(null); }
+}
+
+function goBack(idx) {
+  if(idx===0){ document.getElementById('dotsRow').style.display='none'; show('screen-0'); syncBar(0); }
+  else { show(`screen-q${idx-1}`); syncBar(idx-1); syncDots(idx-1); }
+}
+
+function submitGate() {
+  const name=document.getElementById('fname').value.trim();
+  const email=document.getElementById('femail').value.trim();
+  const err=document.getElementById('ferr');
+  if(!name||!email||!/\S+@\S+\.\S+/.test(email)){err.style.display='block';return;}
+  err.style.display='none';
+  show('screen-loading');
+  const flags=Object.values(answers).map(a=>a.flag).filter(Boolean);
+  const emos=Object.values(answers).map(a=>a.emo).filter(Boolean);
+  const minds=Object.values(answers).map(a=>a.mind).filter(Boolean);
+  const score=Object.values(answers).reduce((s,a)=>s+(a.score||0),0);
+  fetch(FORMSPREE,{
+    method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+    body:JSON.stringify({name,email,source:'CFO Advisory Diagnostic v2',score,flags:flags.join(', '),
+      answers:JSON.stringify(Object.values(answers).map(a=>({q:Q[a.idx].text,answer:a.label})))})
+  }).catch(()=>{});
+  setTimeout(()=>{ buildResults(name,score,flags,emos,minds); show('screen-results'); document.getElementById('dotsRow').style.display='none'; },2000);
+}
+
+function buildResults(name,score,flags,emos,minds) {
+  const maxScore=48;
+  const pct=Math.round((score/maxScore)*100);
+  const r=34,cx=44,cy=44,circ=2*Math.PI*r;
+  const ringC=score>=32?'#FF6B6B':score>=20?'#FFD740':'#00C853';
+  const dash=circ*(1-pct/100);
+  let profile,pClass,rH,rS;
+  if(score>=32){
+    profile='Critical Financial Gaps'; pClass='crit';
+    rH=`${name}, your business has <span class="g">serious financial exposure</span> right now.`;
+    rS=`Your answers reveal a clear pattern: financial decisions are being made reactively, without the visibility, structure, or strategy your business needs to survive and grow. This is not a judgment. It is the reality that a fractional CFO is specifically built to fix.`;
+  } else if(score>=20){
+    profile='Moderate Risk Profile'; pClass='mod';
+    rH=`${name}, you are building something real. <span class="g">But the gaps are costing you.</span>`;
+    rS=`You have revenue and some financial awareness, but the systems, strategy, and visibility are not yet strong enough to protect your margins or fuel what comes next. A fractional CFO at this stage is not overhead. It is the highest-leverage move you can make.`;
+  } else {
+    profile='Strong Financial Foundation'; pClass='rdy';
+    rH=`${name}, you have built a real foundation. <span class="gr">Now it is time to multiply it.</span>`;
+    rS=`Your financial fundamentals are ahead of most owners at your stage. The opportunity now is to move from managing to multiplying. A fractional CFO helps you take what is working and build a strategic architecture that scales it.`;
+  }
+
+  // Findings
+  const F=[];
+  if(flags.includes('diy')||flags.includes('bookkeeper')) F.push({d:'dr',t:'No strategic financial oversight',body:'A bookkeeper records history. A CFO builds the future. The space between them is where your business is losing 15 to 30 percent of its potential margin every single year without knowing it.'});
+  if(flags.includes('no_forecast')) F.push({d:'dr',t:'Blind to what is coming financially',body:'Operating without a 90-day cash forecast is the single most common reason healthy-looking businesses still hit cash crises. The warning signs were always there. You just did not have the system to see them.'});
+  if(flags.includes('no_runway')||flags.includes('cash_tight')) F.push({d:'dr',t:'Dangerously thin financial runway',body:'When your business cannot survive a 30-day pause, you are not really running a business. You are running a treadmill. One client loss, one slow month, one unexpected expense and the whole thing is at risk.'});
+  if(flags.includes('no_pay')) F.push({d:'dr',t:'You are not paying yourself consistently',body:'This is the most honest signal that your financial model needs restructuring. A business that cannot pay its owner is not a financially healthy business. This is one of the first things a CFO fixes.'});
+  if(flags.includes('avoidance')) F.push({d:'dr',t:'Financial avoidance is actively costing you',body:'Every week a financial conversation gets delayed, the gap between where you are and where you could be widens. Avoidance is not a character flaw. It is a sign you need better information and someone in your corner.'});
+  if(flags.includes('doubt')||flags.includes('family_stress')) F.push({d:'dr',t:'The personal cost of this is real',body:'When your business finances are affecting your relationships, your sleep, or your sense of self-worth, the stakes have moved beyond business. You built this company for a reason. That reason deserves to be protected.'});
+  if(flags.includes('blind')||flags.includes('no_visibility')) F.push({d:'da',t:'Limited profit visibility',body:'If you cannot see your profit drivers clearly, you cannot manage them. This is almost always a reporting and systems gap, not a data problem. The data exists. You just need it organized.'});
+  if(flags.includes('cpa')) F.push({d:'da',t:'CPA versus CFO gap',body:'Your CPA keeps you compliant. A CFO makes you strategic. They are both essential and completely different roles. Your business needs both, not one posing as the other.'});
+  if(flags.includes('thinks_luxury')) F.push({d:'da',t:'The fractional CFO is not a luxury for big companies',body:'The fractional model was built specifically for businesses at your stage. Most engagements recover their cost within 90 days through better pricing, removed waste, and cleaner cash flow. The conversation is free.'});
+  if(flags.includes('goal_capital')||flags.includes('goal_exit')) F.push({d:'da',t:'High-stakes financial event ahead',body:'Raising capital or preparing for an exit requires clean financials, defensible projections, and a compelling financial narrative. This is precisely where a fractional CFO earns every dollar.'});
+  if(flags.includes('stagnant')) F.push({d:'da',t:'Profitability plateau',body:'Steady revenue without growth is almost always a pricing or reinvestment problem. A CFO identifies where your capital should be compounding and builds a clear path to the next level.'});
+  if(!F.length) F.push({d:'dg',t:'Solid financial foundation to build on',body:'Your answers reflect genuine financial awareness. The work now is building the architecture to scale that awareness into a strategic growth engine that compounds over time.'});
+
+  // Emotional insight
+  let eiText='';
+  if(emos.includes('avoidance')||emos.includes('doubt')) eiText=`The dread and doubt you carry around your finances is not weakness. It is the cost of running a business without the right support around you. You did not build this company to survive. You built it to thrive. Those two things require very different financial structures.`;
+  else if(emos.includes('overwhelmed')||emos.includes('tension')) eiText=`The weight you are carrying right now is heavier than it has to be. Financial stress at this level does not just affect your business. It affects your leadership, your relationships, and your long-term health. You should not be carrying this alone.`;
+  else if(emos.includes('anxiety')||emos.includes('periodic')) eiText=`The anxiety around your numbers is one of the most common things we hear from business owners at your revenue level. It is not a sign of failure. It is a sign that you have outgrown the systems you started with. What comes next should feel different.`;
+  else if(emos.includes('survival')||emos.includes('security')) eiText=`You answered the vision question with something personal: freedom, security, peace. That matters. Because when finances are structured correctly, the business stops being something you survive and becomes something you are genuinely proud of.`;
+  else if(emos.includes('cautious')||emos.includes('confidence')) eiText=`You are in a transitional moment. Past the early chaos, not yet at peace. That cautious optimism is earned. What bridges the gap between uncertain and confident is not more effort. It is better information and the right structure holding it together.`;
+  else eiText=`The clarity and control you have built is a real competitive advantage. The question now is whether your financial systems are scaled to protect and grow everything you have built as the complexity increases.`;
+
+  const goalMap={goal_stability:'stop the cash flow bleeding and build a real financial cushion',goal_scale:'build the financial architecture your next level of growth actually requires',goal_capital:'get your business lender-ready and positioned to attract capital on your terms',goal_exit:'build a business that commands the valuation you deserve when the time comes'};
+  const gf=flags.find(f=>f.startsWith('goal_'));
+  const ctaLine=gf&&goalMap[gf]?`On this call, we will show you exactly how to ${goalMap[gf]}.`:'On this call, we will walk through every finding and show you what becomes possible.';
+
+  const fHTML=F.map(f=>`<div class="find"><div class="fdot ${f.d}"></div><div class="fbody"><div class="ft">${f.t}</div><div class="fd">${f.body}</div></div></div>`).join('');
+
+  document.getElementById('screen-results').innerHTML=`
+    <div class="profile-row ${pClass}">
+      <div class="p-icon">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      </div>
+      <div><div class="p-tag">${profile}</div><div class="p-name">Your CFO Advisory Profile</div></div>
+    </div>
+    <h2 class="res-h">${rH}</h2>
+    <p class="res-sub">${rS}</p>
+    <div class="score-block">
+      <div class="ring-wrap">
+        <svg width="88" height="88" viewBox="0 0 88 88">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(240,255,244,0.06)" stroke-width="6"/>
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${ringC}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${dash}" transform="rotate(-90 ${cx} ${cy})" style="filter:drop-shadow(0 0 8px ${ringC})"/>
+        </svg>
+        <div class="ring-pct">${pct}%</div>
+      </div>
+      <div>
+        <div class="score-info-lbl">Advisory Urgency Score</div>
+        <div class="score-info-val">${score} / ${maxScore}</div>
+        <div class="score-info-sub">${score>=32?'High urgency. Take action now.':score>=20?'Moderate urgency. Significant upside available.':'Lower urgency. Optimize and compound.'}</div>
+      </div>
+    </div>
+    <div class="emo-block">
+      <div class="emo-lbl">What Your Answers Reveal</div>
+      <div class="emo-quote">${eiText}</div>
+    </div>
+    <div class="finds-card">
+      <div class="finds-hdr"><div class="finds-title">Your Key Findings</div><div class="finds-ct">${F.length} identified</div></div>
+      ${fHTML}
+    </div>
+    <div class="cta-shell">
+      <div class="cta-ey">Your Next Move</div>
+      <div class="cta-h">Book a Free CFO Clarity Call</div>
+      <p class="cta-p">In 30 minutes, Noel will walk through your diagnostic results, identify your single biggest financial leak, and show you exactly what a fractional CFO engagement would look like for your specific business. ${ctaLine}<br><br>No pitch. No pressure. Just a real conversation about your numbers and your future.</p>
+      <a href="${CALENDLY}" target="_blank" class="btn-book">
+        Yes, I Want a Clarity Call
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <p class="cta-foot">Calls available after 5pm. Select the time that works for you.</p>
+    </div>
+    <div class="site-link"><a href="https://truenorthfinancegroup.com" target="_blank">truenorthfinancegroup.com</a></div>`;
+}
+</script>
+</body>
+</html>
